@@ -1,6 +1,6 @@
 import arcpy
 
-fc = r"C:\Users\tim10393\OneDrive - Esri\DemoData\DemoData.gdb\WorldTerritories"
+fc = r"C:\Users\<replace>\DemoData\DemoData.gdb\WorldTerritories"
 fields = ["NAME", "Shape@"]
 whereClause = """NAME = 'United Kingdom'"""
 
