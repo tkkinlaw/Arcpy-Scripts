@@ -10,7 +10,7 @@ dName = desc.baseName
 dGeometry = desc.shapeType
 dCoord = desc.spatialReference
 # Modify output feature
-newName = "{}_New".format(dName)
+newName = f"{dName}_new"
 print(newName)
 # Create new feature class
 arcpy.CreateFeatureclass_management(dPath, newName, dGeometry, None, "", "", dCoord)

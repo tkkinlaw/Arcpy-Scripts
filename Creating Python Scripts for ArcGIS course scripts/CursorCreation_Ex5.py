@@ -9,6 +9,7 @@ with arcpy.da.UpdateCursor(fc, uFields) as uCursor:
     for row in uCursor:
         row[2] = row[1] / row[0]
         uCursor.updateRow(row)
+del uCursor
 # Search value per square foot for parcels to be reassessed
 # Set variables for search cursor
 sFields = ["Parcel_ID", "Owner_Name", "Phone_Number", "PriceSquFt"]
@@ -17,8 +18,9 @@ exp = '"PriceSquFt" <= 90'
 parcelList = ["Parcel_Id,Owner_Name,Phone_Number,PriceSquFt"]
 with arcpy.da.SearchCursor(fc, sFields, exp) as sCursor:
     for row in sCursor:
-        rowText = "{},{},{},{}".format(row[0], row[1], row[2], row[3])
+        rowText = f"{row[0]},{row[1]},{row[2]},{row[3]}"
         parcelList.append(rowText)
+del sCursor
 # Write messages to a CSV file
 textBody = '\n'.join(parcelList)
 csvFile = open(r"C:\EsriTraining\PYTS\AssessmentParcels.csv", "w")
