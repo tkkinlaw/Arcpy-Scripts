@@ -1,35 +1,43 @@
 import arcpy
+import os
 
-arcpy.env.overwriteOutput = True
-
-csvPath = r"C:\Users\tim10393\Desktop\CSVUpdateFC\Manhole_covers.csv"
-fc = r"C:\Users\tim10393\OneDrive - Esri\DemoData\DemoData.gdb\ManholeCovers"
+sourcePath = r"" #path to data location
+csvFile = "ManholeCovers.csv"
+csvPath = os.path.join(sourcePath, csvFile)
+fc = os.path.join(sourcePath, "DemoData.gdb", "ManholeCovers_1")
+print(csvPath)
+print(fc)
 
 # Here you will have to manually list the fields of interest. You could use Describe objects to extract them,
 # which might be more appropriate depending on how many fields you are wanting to work with
-sourceFields = ["X", "Y", "Asset ID", "MHC Status"]
 targetFields = ["SHAPE@", "Asset_ID", "Status"]
+sourceFields = []
 
-csvCursor = arcpy.da.SearchCursor(csvPath, sourceFields, where_clause = '"Asset ID" IS NOT NULL')
+# Just because we can, let's use a for loop and list function to create a list of the fields in the CSV file, excluding the OID field
+flds = arcpy.ListFields("ManholeCovers.csv")
+for fld in flds:
+    if fld.name != "OID_":
+        sourceFields.append(str(fld.name))
+        print(fld.name)
+
+csvCursor = arcpy.da.SearchCursor(csvPath, sourceFields)
 fcCursor = arcpy.da.UpdateCursor(fc, targetFields)
 
+# Count how many records are in the CSV file. This is how many updates will happen.
 count = 0
 for countRow in csvCursor:
     count += 1
-del countRow
-# Since we are using the same cursor later in the code, you need to reset the cursor back to the top
-csvCursor.reset()
+print("There are " + str(count) + " edits to make") 
 
-print("There are " + str(count) + " edits to make")
 for uRow in fcCursor:
-    uXY = uRow[0]
-    uAsset = uRow[1]
-    uStatus = uRow[2]
+    uXY = uRow[0] #Feature class geometry object
+    uAsset = uRow[1] #Feature class asset ID
+    uStatus = uRow[2] #Feature class status, which needs updated
     for sRow in csvCursor:
-        sX = sRow[0]
-        sY = sRow[1]
-        sAsset = sRow[2]
-        sStatus = sRow[3]
+        sX = sRow[0] #CSV file X coordinate
+        sY = sRow[1] #CSV file Y coordinate
+        sAsset = sRow[2] #CSV file asset ID
+        sStatus = sRow[3] #CSV file status, which will be pushed to the matching feature
         if sAsset == uAsset:
             #Update the Geometry and Status fields
             uRow[0] = arcpy.Point(sX, sY)
@@ -45,4 +53,3 @@ print("The end")
 del csvCursor
 del fcCursor
 print("All done")
-
