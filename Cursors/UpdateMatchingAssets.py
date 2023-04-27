@@ -1,7 +1,7 @@
 import arcpy
 import os
 
-sourcePath = r"" #path to data location
+sourcePath = r"C:\Users\tim10393\OneDrive - Esri\DemoData"
 csvFile = "ManholeCovers.csv"
 csvPath = os.path.join(sourcePath, csvFile)
 fc = os.path.join(sourcePath, "DemoData.gdb", "ManholeCovers_1")
@@ -14,7 +14,7 @@ targetFields = ["SHAPE@", "Asset_ID", "Status"]
 sourceFields = []
 
 # Just because we can, let's use a for loop and list function to create a list of the fields in the CSV file, excluding the OID field
-flds = arcpy.ListFields("ManholeCovers.csv")
+flds = arcpy.ListFields(csvFile)
 for fld in flds:
     if fld.name != "OID_":
         sourceFields.append(str(fld.name))
@@ -26,8 +26,8 @@ fcCursor = arcpy.da.UpdateCursor(fc, targetFields)
 # Count how many records are in the CSV file. This is how many updates will happen.
 count = 0
 for countRow in csvCursor:
-    count += 1
-print("There are " + str(count) + " edits to make") 
+    count += 1 #count = count + 1
+print("There are " + str(count) + " edits to make")
 
 for uRow in fcCursor:
     uXY = uRow[0] #Feature class geometry object
