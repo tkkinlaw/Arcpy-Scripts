@@ -8,7 +8,7 @@ fc = r"C:\Users\tim10393\OneDrive - Esri\DemoData\DemoData.gdb\ManholeCovers"
 # Here you will have to manually list the fields of interest. You could use Describe objects to extract them,
 # which might be more appropriate depending on how many fields you are wanting to work with
 sourceFields = ["X", "Y", "Asset ID", "MHC Status"]
-targetFields = ["SHAPE@", "assetID", "Status"]
+targetFields = ["SHAPE@", "Asset_ID", "Status"]
 
 csvCursor = arcpy.da.SearchCursor(csvPath, sourceFields, where_clause = '"Asset ID" IS NOT NULL')
 fcCursor = arcpy.da.UpdateCursor(fc, targetFields)
