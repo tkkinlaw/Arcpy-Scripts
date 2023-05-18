@@ -1,16 +1,16 @@
 # This is a simple example of how to get started with the multiprocessing package
-import time
-import multiprocessing
+import multiprocessing, time
 
 # This function squares a value. 
 def square_value(number):
-    # Simulate some time-consuming computation
+    # This time.sleep(1) tells python to wait a second before executing. 
+    # This is a fast calculation. This add's time to better compare results.
     time.sleep(1)
     return number ** 2
 
 # This function uses the square_value function when using the "normal" technique for processing data
 def normal_execution():
-    numbers = [1, 2, 3, 4, 5]
+    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, `10]
     start_time = time.time()
     results = [square_value(number) for number in numbers]
     end_time = time.time()
