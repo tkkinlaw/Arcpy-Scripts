@@ -14,7 +14,6 @@ def normal_execution():
     start_time = time.time()
     results = [square_value(number) for number in numbers]
     end_time = time.time()
-
     print(f'Normal execution:')
     print(f"Results: {results}")
     print(f"Execution time: {end_time - start_time} seconds")
@@ -23,16 +22,12 @@ def normal_execution():
 def parallel_execution():
     numbers = [1, 2, 3, 4, 5]
     num_processes = multiprocessing.cpu_count()
-
     start_time = time.time()
-
     pool = multiprocessing.Pool(processes=num_processes)
     results = pool.map(square_value, numbers)
-
     end_time = time.time()
     pool.close()
     pool.join()
-
     print(f"Parallel execution (using, {num_processes} processes): ")
     print(f"Results: {results}")
     print(f"Execution time: {end_time - start_time} seconds")
