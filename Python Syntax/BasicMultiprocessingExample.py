@@ -20,7 +20,7 @@ def normal_execution():
 
 # This function uses the square_value function using multiprocessing for the data
 def parallel_execution():
-    numbers = [1, 2, 3, 4, 5]
+    numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, `10]
     num_processes = multiprocessing.cpu_count()
     start_time = time.time()
     pool = multiprocessing.Pool(processes=num_processes)
