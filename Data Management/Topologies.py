@@ -26,7 +26,7 @@ state = 'NC_SPCS_FD' # Name of a feature class from feature dataset to participa
 errorGDBName = "TopologyErrors" # This is the name of the geodatabase storing topology errors
 errorGDB = os.path.join(basePath, errorGDBName+".gdb") # This is the full file path to the geodatabase storing topology errors
 
-timeStamp = datetime.datetime.now().strftime("%d%b%Y_%H_%M_%S")
+timeStamp = datetime.datetime.now().strftime("%d%b%Y_%H_%M_%S") # use the datetime package to include a timestamp in the output name
 topoErrorsFcName = cities+state+"_errors_"+timeStamp # This is the name of the exported topology errors
 outputSJ = os.path.join(errorGDB, topoErrorsFcName+"_Attributes") # The final result is from a spatial join. We want this in the errorGDBName geodatabase
 print("Variables set")
