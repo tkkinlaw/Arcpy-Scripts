@@ -1,15 +1,34 @@
 # We have a geodatabase of two feature classes
-# We want to create a feature data set and a topology for those two FCs.
+# We want to create a feature data set, add these two feature classes to it, and create a topology using those two FCs.
+# We want to add a topology rule that checks for where polygons (City boundaries) are not inside another polygon (State)
 # We then want to validate the topology
+# Then we will export the features violating the topology rule
+# Then transfer the attributes of the City violating the rule to the exported results, since they got dropped.
+### Next steps
 # Then, add another feature class to the topology. Bring another FC into the topology
 # OR/AND apply the topology to the new FC.
-import arcpy, os
+import arcpy
+import os
+import datetime
 arcpy.env.overwriteOutput = True
-ncGDB = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb" # Geodatabase containing the data to start with. 
+
+basePath = r"C:\Users\student\Desktop\PYTS" # This is the common directory all data lives for this script
+
+ncGDBName = "NorthCarolina.gdb" # Geodatabase containing the data to start with.
+ncGDB = os.path.join(basePath, ncGDBName) # This is the full filepath to the source geodatabase
+
 fdName = 'NCCities' # Name of the feature dataset to be created
-topologyName = 'NCCitiesToState' # Name of topology to be created
+topologyName = 'NCCitiesToState' # Name of the topology dataset to be created
+
 cities = 'NCDOT_City_Boundaries_FD' # Name of a feature class from feature dataset to participate in the topology
 state = 'NC_SPCS_FD' # Name of a feature class from feature dataset to participate in the topology
+
+errorGDBName = "TopologyErrors" # This is the name of the geodatabase storing topology errors
+errorGDB = os.path.join(basePath, errorGDBName+".gdb") # This is the full file path to the geodatabase storing topology errors
+
+timeStamp = datetime.datetime.now().strftime("%d%b%Y_%H_%M_%S")
+topoErrorsFcName = cities+state+"_errors_"+timeStamp # This is the name of the exported topology errors
+outputSJ = os.path.join(errorGDB, topoErrorsFcName+"_Attributes") # The final result is from a spatial join. We want this in the errorGDBName geodatabase
 print("Variables set")
 
 # Describe a feature class so we can extract the desired spatial reference
@@ -51,5 +70,27 @@ arcpy.management.AddRuleToTopology(in_topology=topologyName,
 print("Topology rule added")
 
 # Validate topology
-arcpy.management.ValidateTopology(in_topology=topologyName)
+r = arcpy.management.ValidateTopology(in_topology=topologyName)
 print("Topology validated")
+
+# Now, let's print the NC Cities that are violating our topology rule.
+# We need to use the Export Topology Errors geoprocessing tool to do this.
+# We need to make sure we have a geodatabase created to store the output
+if arcpy.Exists(errorGDB):
+    print(f"There is already a geodatabase at {errorGDB}. Exporting errors")
+else:
+    arcpy.management.CreateFileGDB(basePath, errorGDBName)
+    print(f"{errorGDBName} created. Exporting errors")
+
+arcpy.management.ExportTopologyErrors(in_topology=topologyName, out_path=errorGDB, out_basename=topoErrorsFcName)
+print(f"{topoErrorsFcName} created. You can now see the topology errors at: {errorGDB}")
+
+# Exporting topology errors does not export attribute data. Let's use spatial join to transfer the attribute data based
+# on the spatial relationship of the original data (containing the attribute data) and the output errors feature class
+print("Adding original attribute data to output error feature class")
+
+arcpy.analysis.SpatialJoin(target_features=cities,
+                           join_features=state,
+                           out_feature_class=outputSJ,
+                           match_option="WITHIN")
+print("All done")
