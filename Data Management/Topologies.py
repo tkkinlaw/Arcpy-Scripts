@@ -5,11 +5,11 @@
 # OR/AND apply the topology to the new FC.
 import arcpy, os
 arcpy.env.overwriteOutput = True
-ncGDB = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb"
-fdName = 'NCCities'
-topologyName = 'NCCitiesToState'
-cities = 'NCDOT_City_Boundaries_FD'
-state = 'NC_SPCS_FD'
+ncGDB = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb" # Geodatabase containing the data to start with. 
+fdName = 'NCCities' # Name of the feature dataset to be created
+topologyName = 'NCCitiesToState' # Name of topology to be created
+cities = 'NCDOT_City_Boundaries_FD' # Name of a feature class from feature dataset to participate in the topology
+state = 'NC_SPCS_FD' # Name of a feature class from feature dataset to participate in the topology
 print("Variables set")
 
 # Describe a feature class so we can extract the desired spatial reference
