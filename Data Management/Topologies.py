@@ -9,7 +9,6 @@
 # OR/AND apply the topology to the new FC.
 import arcpy
 import os
-import datetime
 arcpy.env.overwriteOutput = True
 
 basePath = r"C:\Users\student\Desktop\PYTS" # This is the common directory all data lives for this script
@@ -26,8 +25,7 @@ state = 'NC_SPCS_FD' # Name of a feature class from feature dataset to participa
 errorGDBName = "TopologyErrors" # This is the name of the geodatabase storing topology errors
 errorGDB = os.path.join(basePath, errorGDBName+".gdb") # This is the full file path to the geodatabase storing topology errors
 
-timeStamp = datetime.datetime.now().strftime("%d%b%Y_%H_%M_%S") # use the datetime package to include a timestamp in the output name
-topoErrorsFcName = cities+state+"_errors_"+timeStamp # This is the name of the exported topology errors
+topoErrorsFcName = cities+state+"_errors" # This is the name of the exported topology errors
 outputSJ = os.path.join(errorGDB, topoErrorsFcName+"_Attributes") # The final result is from a spatial join. We want this in the errorGDBName geodatabase
 print("Variables set")
 
@@ -89,8 +87,9 @@ print(f"{topoErrorsFcName} created. You can now see the topology errors at: {err
 # on the spatial relationship of the original data (containing the attribute data) and the output errors feature class
 print("Adding original attribute data to output error feature class")
 
-arcpy.analysis.SpatialJoin(target_features=cities,
-                           join_features=state,
-                           out_feature_class=outputSJ,
-                           match_option="WITHIN")
+#arcpy.analysis.SpatialJoin(target_features=topoErrorsFcName,join_features=cities, out_feature_class=outputSJ,match_option="WITHIN")
+arcpy.management.RemoveFeatureClassFromTopology(
+    in_topology=topologyName,
+    in_featureclass=fcInFDList[2]
+)
 print("All done")
