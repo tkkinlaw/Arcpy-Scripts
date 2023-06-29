@@ -11,7 +11,7 @@ import arcpy
 import os
 arcpy.env.overwriteOutput = True
 
-basePath = r"C:\Users\student\Desktop\PYTS" # This is the common directory all data lives for this script
+basePath = r"C:\Demos\PYTS" # This is the common directory all data lives for this script
 
 ncGDBName = "NorthCarolina.gdb" # Geodatabase containing the data to start with.
 ncGDB = os.path.join(basePath, ncGDBName) # This is the full filepath to the source geodatabase
@@ -88,8 +88,5 @@ print(f"{topoErrorsFcName} created. You can now see the topology errors at: {err
 print("Adding original attribute data to output error feature class")
 
 #arcpy.analysis.SpatialJoin(target_features=topoErrorsFcName,join_features=cities, out_feature_class=outputSJ,match_option="WITHIN")
-arcpy.management.RemoveFeatureClassFromTopology(
-    in_topology=topologyName,
-    in_featureclass=fcInFDList[2]
-)
+#arcpy.management.RemoveFeatureClassFromTopology(in_topology=topologyName,in_featureclass=fcInFDList[2])
 print("All done")

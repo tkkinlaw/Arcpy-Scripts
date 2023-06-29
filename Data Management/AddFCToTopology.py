@@ -1,34 +1,33 @@
 import arcpy
 import os
+from datetime import datetime
 
-#topo = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb\NCCities\NCCitiesToState"
-#fcToCheck = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb\NCCities\NC_Census_Tracts_FD"
-#state = r"C:\Users\student\Desktop\PYTS\NorthCarolina.gdb\NCCities\NC_SPCS_FD"
+topo = r"C:\Demos\PYTS\NorthCarolina.gdb\NCCities\NCCitiesToState"
+fcToCheck = r"C:\Demos\PYTS\NorthCarolina.gdb\NC_Census_Tracts"
+state = r"C:\Demos\PYTS\NorthCarolina.gdb\NCCities\NC_SPCS_FD"
+outPath = r"C:\Demos\PYTS\TopologyErrors.gdb"
+outName = "Test"
+overwrite = True
 
-topo = arcpy.GetParameterAsText(0)
-fcToCheck = arcpy.GetParameterAsText(1) # This feature class should NOT live in the feature dataset
-state = arcpy.GetParameterAsText(2)
-outPath = arcpy.GetParameterAsText(3) # Output location for topology errors
-outName = arcpy.GetParameterAsText(4) # Output name for topology errors
-overwrite = arcpy.GetParameter(5)
+#To turn this into a Python script tool, comment out the lines of code above and use the ones below.
+#topo = arcpy.GetParameterAsText(0)
+#fcToCheck = arcpy.GetParameterAsText(1) # This feature class should NOT live in the feature dataset
+#state = arcpy.GetParameterAsText(2)
+#outPath = arcpy.GetParameterAsText(3) # Output location for topology errors
+#outName = arcpy.GetParameterAsText(4) # Output name for topology errors
+#overwrite = arcpy.GetParameter(5)
 
 descFc = arcpy.Describe(fcToCheck)
-
 descTopo = arcpy.Describe(topo)
 arcpy.AddMessage(f"These are the feature classes participating in the topology: {descTopo.featureClassNames}")
 
-# Check to see if the input feature class (in the FD) is in the topology
-fcTopoNum = len(descTopo.featureClassNames)
 
-# Check to see if the input feature class is in the feature datset or not. 
-# To do this, we will grab the catalog path for the feature dataset. If the number of backslashes in the 
-# filepath is 2, then it is in a feature dataset. Otherwise, it is not.
-backSlashNum = descFc.catalogPath.split('.gdb')[1].count("\\")
-fdPath = 
-if backSlashNum == 2:
-    newFC = os.path.join(descTopo.path, fcToCheck + "_FD")
-    arcpy.management.ExportFeatures(fcToCheck, newFC)
-    fcToCheck = newFC # DOUBLE CHECK THIS
+# This creates a unique name for the input feature class in the feature dataset. It adds the timestamp.
+outFCFDName = os.path.join(descTopo.path, descFc.name+datetime.now().strftime('%d%b%Y_%H_%M_%S'))
+arcpy.conversion.ExportFeatures(fcToCheck, outFCFDName)
+fcToCheck = outFCFDName
+
+fcTopoNum = len(descTopo.featureClassNames)
 
 # Check to see if the input feature class is in the topology. If it is, and the user allowed the tool to overwrite,
 # then remove this feature class from the topology, then proceed with the script.
@@ -50,7 +49,15 @@ elif fcTopoNum > 1:
     else:
         arcpy.AddMessage(f"{descFc.name} is already participating in the topology")
 # Validate topology
+
+arcpy.AddMessage("Validating topology")
 arcpy.management.ValidateTopology(in_topology=topo)
-arcpy.AddMessage("Topology validated")
+
+if arcpy.Exists(outPath):
+    pass
+else:
+    arcpy.management.CreateFileGDB(outPath)
+
+arcpy.AddMessage(f"Exporting topology errors to {outPath}")
 arcpy.management.ExportTopologyErrors(in_topology=topo, out_path=outPath, out_basename=outName)
-arcpy.AddMessage("Topology errors exported")
+
