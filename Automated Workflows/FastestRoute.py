@@ -49,6 +49,9 @@ arcpy.na.Solve(
     in_network_analysis_layer=naxLyr)
 print("Problem solved")
 
+from pprint import pprint
+pprint(arcpy.da.Describe(naxLyr))
+
 arcpy.management.Delete(inStopFc)
 
 pprint(arcpy.da.Describe(naxLyr[0]))

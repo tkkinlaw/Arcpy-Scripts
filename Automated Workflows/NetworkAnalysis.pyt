@@ -32,11 +32,18 @@ class FastestRoute:
         outRoute = arcpy.Parameter(
         displayName="Output Route Name",
         name="Output_Route_Name",
-        datatype="GPNALayer",
+        datatype="GPString",
         parameterType="Required",
         direction="Output")
 
-        params = [inputCoord,outRoute]
+        outFC = arcpy.Parameter(
+        displayName="Output Route",
+        name="Output_Route",
+        datatype="DEFeatureClass",
+        parameterType="Required",
+        direction="Output")
+        
+        params = [inputCoord,outRoute,outFC]
         return params
 
     def isLicensed(self):
@@ -65,18 +72,19 @@ class FastestRoute:
             arcpy.AddMessage(row[0])
             inputCoords.append(row[0])
         del sCur
-        arcpy.AddMessage(parameters[0].value)
-        gdb = r"C:\Users\tim10393\Documents\ArcGIS\Projects\NetworkAnalysis\Default.gdb"
+
+        arcpy.AddMessage(arcpy.env.scratchGDB)
+        
+        gdb = arcpy.env.scratchGDB
         inBarFcName = "Barriers"
         inStopFcName = "StopsFc" 
         inStopFc = os.path.join(gdb, inStopFcName)
 
         arcpy.env.workspace = gdb
         arcpy.env.overwriteOutput = True
-        arcpy.env.addOutputsToMap = True
 
         #Create a table
-        arcpy.management.CreateFeatureclass(out_path=gdb, out_name=inStopFcName, geometry_type="Point", spatial_reference=4326)
+        arcpy.management.CreateFeatureclass(out_path=gdb, out_name=inStopFcName, geometry_type="Point", spatial_reference=3857)
 
         # Provide input stop data for the insert cursor
         cur = arcpy.da.InsertCursor(inStopFcName, ["Shape@"])
@@ -86,11 +94,15 @@ class FastestRoute:
             cur.insertRow([pntGeom])
         del cur
 
+        # Try signing in with Python 
+        arcpy.SignInToPortal("https://adsrv2019.ad.local/portal/","portaladmin","Esri.4.GIS")
+
         #Create the analysis layer
         naxLyr = arcpy.na.MakeRouteAnalysisLayer(
-            network_data_source="https://www.arcgis.com/",
+            network_data_source="https://adsrv2019.ad.local/portal/",
             layer_name=naxName)
         print("Network analysis layer created")
+        naxLyr.getOutput(0)
 
         # Add the stop locations
         arcpy.na.AddLocations(
@@ -99,21 +111,21 @@ class FastestRoute:
             in_table=inStopFc)
         print("Input locations added")
 
-        # Add the barriers
-        arcpy.na.AddLocations(
-            in_network_analysis_layer=naxLyr,
-            sub_layer="Polygon Barriers",
-            in_table=inBarFcName)
-        print("Barriers added")
-
         # Solve the problem
         arcpy.na.Solve(
             in_network_analysis_layer=naxLyr)
         print("Problem solved")
 
-        arcpy.management.Delete(inStopFc)
+        d = arcpy.da.Describe(naxLyr.getOutput(0))
+        for dictionary in d['children']:
+            if "Route" in dictionary['name']:
+                routeFC_FD = dictionary['catalogPath']
+                print(routeFC_FD)
 
-        arcpy.AddMessage(arcpy.da.Describe(naxLyr[0]))
+        arcpy.management.CopyFeatures(routeFC_FD, parameters[2].value)
+        arcpy.AddMessage("Output created")
+        delFD = os.path.split(d['children'][0]['catalogPath'])[0]
+        arcpy.management.Delete([delFD,inStopFc])
         return
 
     def postExecute(self, parameters):
