@@ -95,7 +95,7 @@ class FastestRoute:
         del cur
 
         # Try signing in with Python 
-        arcpy.SignInToPortal("Your Portal","Your Username","Your Password")
+        arcpy.SignInToPortal("Your Portal","Your username","Your password")
 
         #Create the analysis layer
         naxLyr = arcpy.na.MakeRouteAnalysisLayer(
