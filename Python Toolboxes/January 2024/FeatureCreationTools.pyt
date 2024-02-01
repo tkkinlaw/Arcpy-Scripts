@@ -176,8 +176,8 @@ class Testing:
         
         fieldMatching.parameterDependencies = [targetFeatureLayer.name, csvFile.name]
         fieldMatching.columns = [['Field', 'Input Field'], ['Field', 'Target Field']]
-        fieldMatching.filters[0].type = 'ValueList'
-        fieldMatching.filters[1].type = 'ValueList'
+        #fieldMatching.filters[0].type = 'ValueList'
+        #fieldMatching.filters[1].type = 'ValueList'
         #fieldMatching.values = [['NAME', 'SUM']]
         #fieldMatching.filters[1].list = ['SUM', 'MIN', 'MAX', 'STDEV', 'MEAN']
 
