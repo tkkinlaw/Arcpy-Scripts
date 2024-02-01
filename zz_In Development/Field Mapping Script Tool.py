@@ -2,22 +2,27 @@ import arcpy
 
 targetFC = arcpy.GetParameterAsText(0)
 inputTable = arcpy.GetParameterAsText(1)
-fieldNamesTarget = arcpy.GetParameterAsText(2).split(";") # Split the long string of field names into a list of those names
-fieldNamesInput = arcpy.GetParameterAsText(3).split(";") # Split the long string of field names into a list of those names
+fieldMatching = arcpy.GetParameter(2)
 
-arcpy.AddMessage(fieldNamesTarget)
-arcpy.AddMessage(type(fieldNamesTarget[0]))
+# Create a two lists. One for the Source and the other for the Target field names the user provided
+fieldNamesInput = []
+fieldNamesTarget = []
+for pair in fieldMatching.exportToString().split(";"): # The arcpy.GetParameter returns a ValueTable object. This behaves differently in a Python Script tool VS Python Toolbox. 
+    fieldNamesInput.append(pair.split(" ")[0])
+    fieldNamesTarget.append(pair.split(" ")[1])
+    
 
-# Get a list of input fields
+# Now evaluate the list of user input, and just extract the field objects if the field.name was provided by the user
 fieldMapDict = {}
 fieldNamesTargetList = []
+fieldNamesInputList = []
+
 for field in arcpy.Describe(targetFC).fields:
     if field.name in fieldNamesTarget:
         fieldNamesTargetList.append(field)
 
 fieldMapDict[targetFC]=fieldNamesTargetList
 
-fieldNamesInputList = []
 for field in arcpy.Describe(inputTable).fields:
     if field.name in fieldNamesInput:
         fieldNamesInputList.append(field)
