@@ -1,5 +1,5 @@
 ## What are these files about?
-In a class in 2024 we were all interested in creating a python script, then a python script tool, and lastly evolving that in to a python toolbox. This tool allows the end user to update a feature class using data from a table. The tricky part of this is mapping the source table's fields to the target fields in the feature class. 
+In one class we were all interested in creating a python script, then a python script tool, and lastly evolving that in to a python toolbox. This tool allows the end user to update a feature class using data from a table. The tricky part of this is mapping the source table's fields to the target fields in the feature class. 
 
 The three notebooks in this directory walk through the basics of using the arcpy.FieldMap and FieldMappings classes. Then, the Field Script Tool.py is the final python script used to create a working python toolbox (FieldMapping.atbx).
 
