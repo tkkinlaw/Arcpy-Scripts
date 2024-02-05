@@ -5,4 +5,4 @@ The three notebooks in this directory walk through the basics of using the arcpy
 
 The FieldMapping.atbx contains two script tools in it, with embedded scripts in each. The first shows the first successful attempt, however the user interface is not ideal. The second script tool in the toolbox shows the completed, ideal, user interface.
 
-Lastly, the Python Toolbox (Python Toolbox\Field Mapping.pyt) shows the same final script, but in this single-file approach of creating a elf-made geoprocessing tool.
+Lastly, the Python Toolbox (Python Toolbox\Field Mapping.pyt) shows the same final script, but in this single-file approach of creating a custom geoprocessing tool.
