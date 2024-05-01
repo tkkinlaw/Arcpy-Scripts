@@ -1,0 +1,19 @@
+# import packaes
+import arcpy
+
+# Declare variables
+gdbLoc = r"C:\Users\tim10393\OneDrive - Esri\DemoData\Imagery Data\NAIP\Texas"
+gdbName = "NAIP_TX_2020"
+gdbPath = f"{gdbLoc}\{gdbName}.gdb"
+
+mdName = "Yeehaw"
+md = f"{gdbPath}\{mdName}"
+
+# Add raster
+raster = r"C:\Users\tim10393\OneDrive - Esri\DemoData\Imagery Data\NAIP\Texas\2020\m_3209841_sw_14_060_20201004\m_3209841_sw_14_060_20201004.tif"
+arcpy.management.AddRastersToMosaicDataset(
+    in_mosaic_dataset=md,
+    raster_type="Raster Dataset",
+    input_path=raster)
+
+arcpy.management.BuildFootprints(in_mosaic_dataset=md)
