@@ -1,6 +1,6 @@
 import arcpy
 
-fc = r"C:\Demos\PYTS\SanDiego.gdb\MajorAttractions"
+fc = r"C:\Demo\PYTS\SanDiego.gdb\MajorAttractions"
 
 desc = arcpy.Describe(fc)
 
