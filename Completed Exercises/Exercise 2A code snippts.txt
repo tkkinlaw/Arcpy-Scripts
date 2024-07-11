@@ -16,3 +16,6 @@ arcpy.analysis.SpatialJoin(
 
 # Snippet 2
 arcpy.management.DeleteField('FireHydrantswithBattalions',["NAME_1", "DATE_EST", "ENGINE_ID"])
+
+# Snippet 3
+arcpy.management.CalculateField('FireHydrantswithBattalions', 'BATTALION_CAT', "'Battalion Number ' + str(!BATTALION!)", "PYTHON3")
