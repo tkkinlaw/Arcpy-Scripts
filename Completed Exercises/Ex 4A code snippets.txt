@@ -4,7 +4,6 @@ arcpy.env.workspace = r"C:\EsriTraining\PYTS\North_Carolina"
 
 gdbList = arcpy.ListWorkspaces("", "FileGDB")
 print(gdbList)
-fcList = arcpy.ListFeatureClasses()
 
 arcpy.env.workspace = r"C:\EsriTraining\PYTS\North_Carolina\CountyData.gdb"
 fcList = arcpy.ListFeatureClasses()
