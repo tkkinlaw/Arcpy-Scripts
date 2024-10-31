@@ -1,0 +1,21 @@
+This exercises does not use a notebook. Here are the completed code snippets.
+
+# Snippet 1
+arcpy.analysis.SpatialJoin(
+    target_features="Fire Hydrants",
+    join_features="Fire Alarm Districts",
+    out_feature_class=r"C:\EsriTraining\PYTS\DC_Fire\DC_FireUtilities.gdb\FireHydrantswithBattalions",
+    join_operation="JOIN_ONE_TO_ONE",
+    join_type="KEEP_ALL",
+    field_mapping='NAME "NAME" true true false 50 Text 0 0,First,#,Fire Hydrants,NAME,0,49;DESCRIPTIO "DESCRIPTIO" true true false 254 Text 0 0,First,#,Fire Hydrants,DESCRIPTIO,0,253;NAME_1 "NAME" true true false 60 Text 0 0,First,#,Fire Alarm Districts,NAME,0,59;DATE_EST "DATE_EST" true true false 8 Date 0 0,First,#,Fire Alarm Districts,DATE_EST,-1,-1;ENGINE_ID "ENGINE_ID" true true false 10 Text 0 0,First,#,Fire Alarm Districts,ENGINE_ID,0,9;BATTALION "BATTALION" true true false 2 Short 0 0,First,#,Fire Alarm Districts,BATTALION,-1,-1;SHAPE_Leng "SHAPE_Leng" true true false 8 Double 0 0,First,#,Fire Alarm Districts,SHAPE_Leng,-1,-1;Shape_Length "Shape_Length" false true true 8 Double 0 0,First,#,Fire Alarm Districts,Shape_Length,-1,-1;Shape_Area "Shape_Area" false true true 8 Double 0 0,First,#,Fire Alarm Districts,Shape_Area,-1,-1;BATTALION_CAT "BATTALION_CAT" true true false 255 Text 0 0,First,#,Fire Alarm Districts,BATTALION_CAT,0,254',
+    match_option="INTERSECT",
+    search_radius=None,
+    distance_field_name="",
+    match_fields=None
+)
+
+# Snippet 2
+arcpy.management.DeleteField('FireHydrantswithBattalions',["NAME_1", "DATE_EST", "ENGINE_ID"])
+
+# Snippet 3
+arcpy.management.CalculateField('FireHydrantswithBattalions', 'BATTALION_CAT', "'Battalion Number ' + str(!BATTALION!)", "PYTHON3")

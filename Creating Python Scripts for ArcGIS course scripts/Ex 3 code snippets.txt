@@ -1,0 +1,8 @@
+This exercises does not use a notebook. Here are the completed code snippets.
+
+# Snippet 1
+desc = arcpy.da.Describe("ParcelPts")
+desc["path"]
+desc["baseName"]
+desc["spatialReference"]
+desc["spatialReference"].name

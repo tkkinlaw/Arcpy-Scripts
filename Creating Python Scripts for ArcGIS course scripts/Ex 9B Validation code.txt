@@ -1,0 +1,42 @@
+class ToolValidator:
+  # Class to add custom behavior and properties to the tool and tool parameters.
+
+    def __init__(self):
+        # Set self.params for use in other validation methods.
+        self.params = arcpy.GetParameterInfo()
+
+    def initializeParameters(self):
+        # Customize parameter properties. This method gets called when the
+        # tool is opened.
+        return
+
+    def updateParameters(self):
+        # Modify the values and properties of parameters before internal
+        # validation is performed.
+        return
+
+    def updateMessages(self):
+        # Modify the messages created by internal validation for each tool
+        # parameter. This method is called after internal validation.
+        if self.params[0].altered:
+            if arcpy.da.Describe(self.params[0].value)["extension"] != "csv":
+                self.params[0].setErrorMessage("Input table must be a CSV file")
+            elif arcpy.da.Describe(self.params[0].value)["extension"] == "csv":
+                out_csv_file = self.params[0].value
+                count = arcpy.management.GetCount(out_csv_file)
+                if int(count[0]) == 0:
+                    self.params[0].setErrorMessage("File contains no rows, process will likely fail")
+                elif int(count[0]) > 40:
+                    self.params[0].setWarningMessage(f"File has {count[0]} rows and may take an extended amount of time to process")
+                else:
+                    pass
+        return
+
+    # def isLicensed(self):
+    #     # Set whether the tool is licensed to execute.
+    #     return True
+
+    # def postExecute(self):
+    #     # This method takes place after outputs are processed and
+    #     # added to the display.
+    #     return
