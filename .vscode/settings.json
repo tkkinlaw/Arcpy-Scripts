@@ -1,5 +1,4 @@
 {
-    "python.defaultInterpreterPath": "C:\\Users\\tim10393\\AppData\\Local\\Programs\\ArcGIS\\Pro\\bin\\Python\\envs\\arcgispro-py3",
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": []
+    "python.defaultInterpreterPath": "C:\\Users\\tim10393\\AppData\\Local\\ESRI\\conda\\envs\\arcgispro-py3-clone",
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }
